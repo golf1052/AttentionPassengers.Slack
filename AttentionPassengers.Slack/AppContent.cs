@@ -20,7 +20,7 @@ namespace AttentionPassengers.Slack
 
         public static void LoadContent()
         {
-            Routes = JObject.Parse(File.ReadAllText(@"Content\routes.json"));
+            Routes = JObject.Parse(File.ReadAllText("Content/routes.json"));
         }
     }
 }
