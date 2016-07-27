@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using AttentionPassengers;
+using AttentionPassengers.Slack.Constants;
+using AttentionPassengers.Dto.Alerts;
 
 namespace AttentionPassengers.Slack.Controllers
 {
@@ -15,13 +16,13 @@ namespace AttentionPassengers.Slack.Controllers
         public async Task<JObject> Receive()
         {
             RequestBody request = new RequestBody(Request.Form);
-            string route = (string)AppContent.Routes[request.Text];
-            Dto.Alerts.AlertHeadersByRouteObject alertHeaders = null;
+            string route = (string)AppConstants.Routes[request.Text];
+            AlertHeadersByRouteObject alertHeaders = null;
             if (route == null)
             {
                 try
                 {
-                    alertHeaders = await AppContent.AttentionPassengers.AlertsHeadersByRoute(request.Text);
+                    alertHeaders = await AppConstants.AttentionPassengers.AlertsHeadersByRoute(request.Text);
                 }
                 catch (Exception ex)
                 {
@@ -30,7 +31,7 @@ namespace AttentionPassengers.Slack.Controllers
             }
             else
             {
-                alertHeaders = await AppContent.AttentionPassengers.AlertsHeadersByRoute(route);
+                alertHeaders = await AppConstants.AttentionPassengers.AlertsHeadersByRoute(route);
             }
             string finalMessage = "";
             if (alertHeaders.AlertHeaders.Count == 0)
