@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using AttentionPassengers.Slack.Constants;
 
 namespace AttentionPassengers.Slack
 {
@@ -27,7 +28,7 @@ namespace AttentionPassengers.Slack
                 .UseStartup<Startup>()
                 .Build();
 
-            AppContent.LoadContent();
+            AppConstants.LoadContent();
             host.Run();
         }
     }

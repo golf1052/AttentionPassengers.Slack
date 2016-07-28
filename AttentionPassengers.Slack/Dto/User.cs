@@ -9,11 +9,13 @@ namespace AttentionPassengers.Slack.Dto
     public class User
     {
         public string Id { get; set; }
-        public Dictionary<string, HashSet<AppConstants.DayTimes>> SubscribedTimes;
+        public Dictionary<string, HashSet<AppConstants.DayTimes>> SubscribedTimes { get; set; }
+        public HashSet<string> SeenAlerts { get; set; }
 
         public User()
         {
-            SubscribedTimes = new Dictionary<string, HashSet<Constants.AppConstants.DayTimes>>();
+            SubscribedTimes = new Dictionary<string, HashSet<AppConstants.DayTimes>>();
+            SeenAlerts = new HashSet<string>();
         }
     }
 }

@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NodaTime;
+using MongoDB.Bson.Serialization;
+using AttentionPassengers.Slack.Dto;
 
 namespace AttentionPassengers.Slack.Constants
 {
@@ -16,7 +18,7 @@ namespace AttentionPassengers.Slack.Constants
         public static AttentionPassengers AttentionPassengers;
         public static MongoClient Mongo;
         public static IMongoDatabase Database;
-        public static IMongoCollection<BsonDocument> Collection;
+        public static IMongoCollection<User> Collection;
 
         public enum DayTimes
         {
@@ -42,7 +44,8 @@ namespace AttentionPassengers.Slack.Constants
             AttentionPassengers = new AttentionPassengers(Secrets.ApiKey);
             Mongo = new MongoClient(Secrets.MongoConnectionString);
             Database = Mongo.GetDatabase("mbta");
-            Collection = Database.GetCollection<BsonDocument>("mbta");
+            Collection = Database.GetCollection<User>("mbta");
+            //BsonClassMap.RegisterClassMap<User>();
         }
 
         public static void LoadContent()

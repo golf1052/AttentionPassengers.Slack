@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using AttentionPassengers.Slack.Constants;
 using AttentionPassengers.Dto.Alerts;
+using AttentionPassengers.Slack.Dto;
 
 namespace AttentionPassengers.Slack.Controllers
 {
@@ -43,6 +44,20 @@ namespace AttentionPassengers.Slack.Controllers
                 finalMessage += alertHeader.HeaderText + "\n";
             }
             return BasicMessage(finalMessage);
+        }
+
+        [HttpPost]
+        [Route("test")]
+        public async Task Test()
+        {
+            User user = new Dto.User();
+            HashSet<AppConstants.DayTimes> subscribedTimes = new HashSet<AppConstants.DayTimes>();
+            subscribedTimes.Add(AppConstants.DayTimes.AmPeak);
+            subscribedTimes.Add(AppConstants.DayTimes.PmPeak);
+            user.SubscribedTimes.Add("red", subscribedTimes);
+            user.SeenAlerts.Add("111");
+            user.SeenAlerts.Add("222");
+            await AppConstants.Collection.InsertOneAsync(user);
         }
 
         private JObject BasicMessage(string text)
