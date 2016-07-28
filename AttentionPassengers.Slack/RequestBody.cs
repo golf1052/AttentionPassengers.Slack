@@ -51,7 +51,7 @@ namespace AttentionPassengers.Slack.Controllers
             }
             if (formData.ContainsKey("text"))
             {
-                Text = formData["text"].ToString().ToLower();
+                Text = formData["text"].ToString().ToLower().Trim();
             }
             if (formData.ContainsKey("response_url"))
             {

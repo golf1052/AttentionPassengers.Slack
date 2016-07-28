@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using AttentionPassengers.Slack.Constants;
+using MongoDB.Driver;
+using MongoDB.Bson.Serialization.Conventions;
+using AttentionPassengers.Slack.Dto;
+using MongoDB.Bson;
 
 namespace AttentionPassengers.Slack
 {
@@ -14,6 +18,13 @@ namespace AttentionPassengers.Slack
     {
         public static void Main(string[] args)
         {
+            AppConstants.Mongo = new MongoClient(Secrets.MongoConnectionString);
+            AppConstants.Database = AppConstants.Mongo.GetDatabase("mbta");
+            AppConstants.UserCollection = AppConstants.Database.GetCollection<User>("users");
+            ConventionPack pack = new ConventionPack();
+            pack.Add(new EnumRepresentationConvention(BsonType.String));
+            ConventionRegistry.Register("EnumStringConvention", pack, t => true);
+
             var config = new ConfigurationBuilder()
                 .AddCommandLine(args)
                 .AddEnvironmentVariables(prefix: "ASPNETCORE_")
