@@ -262,7 +262,7 @@ namespace AttentionPassengers.Slack.Controllers
                         user,
                         new UpdateOptions { IsUpsert = true });
                 }
-                await Task.Delay(TimeSpan.FromSeconds(30));
+                await Task.Delay(TimeSpan.FromMinutes(5));
             }
         }
     }
