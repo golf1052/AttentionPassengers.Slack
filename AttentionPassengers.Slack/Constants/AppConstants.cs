@@ -31,7 +31,8 @@ namespace AttentionPassengers.Slack.Constants
             Midday,
             PmPeak,
             Evening,
-            Weekend
+            Weekend,
+            None
         }
 
         public static Dictionary<DayTimes, TopicTimeRange> TopicTimes = new Dictionary<DayTimes, TopicTimeRange>
@@ -55,13 +56,13 @@ namespace AttentionPassengers.Slack.Constants
 
         public static async Task<string> SendSlackMessage(string message, string channel)
         {
-            JObject response = new JObject();
-            response["token"] = Secrets.SlackToken;
-            response["channel"] = channel;
-            response["text"] = message;
-            response["username"] = "Attention Passengers";
-            response["icon_url"] = "https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-07-25/62701244852_2df79c163286988755ea_48.jpg";
-            return await PostWebData(new Uri("https://slack.com/api/chat.postMessage"), response.ToString());
+            Dictionary<string, string> response = new Dictionary<string, string>();
+            response.Add("token", Secrets.SlackToken);
+            response.Add("channel", channel);
+            response.Add("text", message);
+            response.Add("username", "Attention Passengers");
+            response.Add("icon_url", "https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-07-25/62701244852_2df79c163286988755ea_48.jpg");
+            return await PostWebData(new Uri("https://slack.com/api/chat.postMessage"), response);
         }
 
         public static async Task<string> SendToResponseUrl(string message, string responseUrl)
@@ -71,11 +72,22 @@ namespace AttentionPassengers.Slack.Constants
             return await PostWebData(new Uri(responseUrl), response.ToString());
         }
 
+        public static async Task<string> PostWebData(Uri uri, IEnumerable<KeyValuePair<string, string>> content)
+        {
+            FormUrlEncodedContent formContent = new FormUrlEncodedContent(content);
+            return await PostWebData(uri, formContent);
+        }
+
         public static async Task<string> PostWebData(Uri uri, string content)
         {
-            HttpClient client = new HttpClient();
             StringContent stringContent = new StringContent(content, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(uri, stringContent);
+            return await PostWebData(uri, stringContent);
+        }
+
+        private static async Task<string> PostWebData(Uri uri, HttpContent content)
+        {
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.PostAsync(uri, content);
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return await response.Content.ReadAsStringAsync();
@@ -152,6 +164,14 @@ namespace AttentionPassengers.Slack.Constants
             {
                 return DayTimes.PmPeak;
             }
+            else if (str == "evening")
+            {
+                return DayTimes.Evening;
+            }
+            else if (str == "the evening")
+            {
+                return DayTimes.Evening;
+            }
             else if (str == "weekend")
             {
                 return DayTimes.Weekend;
@@ -162,7 +182,7 @@ namespace AttentionPassengers.Slack.Constants
             }
             else
             {
-                return DayTimes.Weekend;
+                return DayTimes.None;
             }
         }
     }
